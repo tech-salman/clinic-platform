@@ -16,15 +16,18 @@ export default function Book() {
   const [isErr, setIsErr] = useState(false)
 
   useEffect(() => {
-    supabase.from('branches').select('*').then(({ data }) => setBranches(data || []))
-    supabase.from('doctors').select('*').then(({ data }) => setDoctors(data || []))
-    const preDoctor = searchParams.get('doctor')
-    if (preDoctor) {
-      supabase.from('slots').select('branch_id').eq('doctor_id', preDoctor).limit(1)
-        .then(({ data }) => {
-          if (data?.[0]?.branch_id) setBranchId(data[0].branch_id)
-        })
-    }
+    ;(async () => {
+      const { data: br } = await supabase.from('branches').select('*')
+      setBranches(br || [])
+      const { data: dr } = await supabase.from('doctors').select('*')
+      setDoctors(dr || [])
+      const preDoctor = searchParams.get('doctor')
+      if (preDoctor) {
+        const { data: sl } = await supabase.from('slots').select('branch_id').eq('doctor_id', preDoctor).limit(1)
+        if (sl?.[0]?.branch_id) setBranchId(sl[0].branch_id)
+        else if (br?.[0]?.id) setBranchId(br[0].id)
+      }
+    })()
   }, [])
 
   async function loadSlots() {
@@ -46,8 +49,9 @@ export default function Book() {
     }).select().single()
     if (error) { setMsg(error.message); setIsErr(true); return }
     await supabase.from('slots').update({ is_booked: true }).eq('id', slot.id)
+    await loadSlots()
     setMsg('Booked! Appointment ID: ' + appt.id)
-    loadSlots()
+    setIsErr(false)
   }
 
   return (
