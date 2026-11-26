@@ -8,7 +8,7 @@ import Account from './pages/Account'
 import Admin from './pages/Admin'
 
 function Navbar() {
-  const { user, signOut } = useAuth()
+  const { user, role, signOut } = useAuth()
   const linkCls = ({ isActive }) =>
     `rounded-lg px-3 py-2 text-sm font-medium transition ${isActive ? 'bg-teal-50 text-teal-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`
 
@@ -27,7 +27,7 @@ function Navbar() {
           <NavLink to="/book" className={linkCls}>Book Appointment</NavLink>
           <NavLink to="/shop" className={linkCls}>Shop</NavLink>
           <NavLink to="/account" className={linkCls}>My Account</NavLink>
-          <NavLink to="/admin" className={linkCls}>Admin</NavLink>
+          {role === 'admin' && <NavLink to="/admin" className={linkCls}>Admin</NavLink>}
         </nav>
         <div className="ml-auto flex items-center gap-2">
           {user ? (

@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/AuthContext'
 
 export default function Book() {
   const { user } = useAuth()
+  const [searchParams] = useSearchParams()
   const [branches, setBranches] = useState([])
   const [doctors, setDoctors] = useState([])
   const [slots, setSlots] = useState([])
   const [branchId, setBranchId] = useState('')
-  const [doctorId, setDoctorId] = useState('')
+  const [doctorId, setDoctorId] = useState(searchParams.get('doctor') || '')
   const [date, setDate] = useState('2026-11-27')
   const [msg, setMsg] = useState('')
   const [isErr, setIsErr] = useState(false)
@@ -16,6 +18,13 @@ export default function Book() {
   useEffect(() => {
     supabase.from('branches').select('*').then(({ data }) => setBranches(data || []))
     supabase.from('doctors').select('*').then(({ data }) => setDoctors(data || []))
+    const preDoctor = searchParams.get('doctor')
+    if (preDoctor) {
+      supabase.from('slots').select('branch_id').eq('doctor_id', preDoctor).limit(1)
+        .then(({ data }) => {
+          if (data?.[0]?.branch_id) setBranchId(data[0].branch_id)
+        })
+    }
   }, [])
 
   async function loadSlots() {
@@ -62,9 +71,8 @@ export default function Book() {
           <label className="label">2. Doctor</label>
           <select className="input" value={doctorId} onChange={e => setDoctorId(e.target.value)}>
             <option value="">Doctor chuno</option>
-            {doctors.map(d => <option key={d.id} value={d.id}>{d.specialties || 'Doctor'} — {d.id.slice(0, 8)}</option>)}
+            {doctors.map(d => <option key={d.id} value={d.id}>{d.name || 'Doctor'} — {d.specialties || 'General'}</option>)}
           </select>
-          <p className="mt-1 text-xs text-slate-400">Doctor ka naam Day 3 mein profiles se join karke dikhana hai — abhi specialty + ID dikh raha hai.</p>
         </div>
         <div>
           <label className="label">3. Date</label>

@@ -94,7 +94,6 @@ export default function Home() {
       {/* Doctors — live */}
       <section>
         <h2 className="text-2xl font-bold text-slate-900">Hamare doctors</h2>
-        <p className="mt-1 text-sm text-slate-500">Doctor ka naam profiles se join karke Day 3 mein dikhana hai — abhi specialty aur bio dikh rahe hain.</p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {doctors.length === 0 && (
             <p className="card text-sm text-slate-500">Doctors jald aa rahe hain — Supabase mein doctor add hote hi yahan dikhega.</p>
@@ -102,9 +101,9 @@ export default function Home() {
           {doctors.map(d => (
             <div key={d.id} className="card">
               <span className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-50 text-2xl">👨‍⚕️</span>
-              <h3 className="mt-3 font-bold text-slate-900">{d.specialties || 'General Physician'}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-slate-500">{d.bio || 'Tajurba-kar doctor — appointment book karke milain.'}</p>
-              <Link to="/book" className="btn-outline mt-4 w-full">Book Appointment</Link>
+              <h3 className="mt-3 font-bold text-slate-900">{d.name || 'Doctor'}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-slate-500">{d.specialties || 'General Physician'} — {d.bio || 'Tajurba-kar doctor.'}</p>
+              <Link to={`/book?doctor=${d.id}`} className="btn-outline mt-4 w-full">Book Appointment</Link>
             </div>
           ))}
         </div>
