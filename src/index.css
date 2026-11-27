@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
+/* Dark-mode variant for Tailwind v4: .dark on <html> (set by ThemeProvider). */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 }
@@ -8,6 +11,13 @@
 @layer base {
   body {
     @apply bg-slate-50 text-slate-800 font-sans antialiased;
+  }
+  /* Dark mode base: slate-950 page, slate-100 text. */
+  .dark body {
+    @apply bg-slate-950 text-slate-100;
+  }
+  .dark h1, .dark h2, .dark h3 {
+    @apply text-slate-100;
   }
 }
 
@@ -45,4 +55,44 @@
   .msg-err {
     @apply rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700;
   }
+
+  /* ---- Dark-mode overrides (plain CSS so they always win over the light rules) ---- */
+  .dark .card {
+    background-color: #1e293b; /* slate-800 */
+    border-color: #334155; /* slate-700 */
+    color: #f1f5f9;
+  }
+  .dark .input {
+    background-color: #1e293b;
+    border-color: #475569;
+    color: #f1f5f9;
+  }
+  .dark .input::placeholder { color: #94a3b8; }
+  .dark .btn-outline {
+    background-color: #1e293b;
+    border-color: #475569;
+    color: #e2e8f0;
+  }
+  .dark .btn-outline:hover { border-color: #2dd4bf; color: #5eead4; }
+  .dark .label { color: #cbd5e1; }
+  .dark .badge-green { background-color: rgba(16,185,129,.15); color: #6ee7b7; }
+  .dark .badge-amber { background-color: rgba(245,158,11,.15); color: #fcd34d; }
+  .dark .badge-slate { background-color: #334155; color: #cbd5e1; }
+  .dark .msg-ok { background-color: rgba(16,185,129,.15); border-color: rgba(16,185,129,.4); color: #a7f3d0; }
+  .dark .msg-err { background-color: rgba(239,68,68,.15); border-color: rgba(239,68,68,.4); color: #fecaca; }
+  .dark .btn-danger { background-color: rgba(239,68,68,.12); border-color: rgba(239,68,68,.35); color: #fca5a5; }
+  /* Header / footer in dark mode. */
+  .dark header { background-color: rgba(2,6,23,.95); border-color: #1e293b; }
+  .dark footer { background-color: #0f172a; border-color: #1e293b; }
+  /* Muted text on dark backgrounds. */
+  .dark .text-slate-500 { color: #94a3b8; }
+  .dark .text-slate-600 { color: #cbd5e1; }
+  .dark .text-slate-700 { color: #e2e8f0; }
+  .dark .text-slate-900 { color: #f1f5f9; }
+  .dark .border-slate-100, .dark .border-slate-200 { border-color: #334155; }
+  .dark .bg-slate-50 { background-color: #1e293b; }
+  .dark .bg-white { background-color: #1e293b; }
+  .dark select.input option { background-color: #1e293b; color: #f1f5f9; }
+  /* Native date input icon in dark mode. */
+  .dark input[type="date"] { color-scheme: dark; }
 }
